@@ -16,5 +16,12 @@ def showLoop(alpha,M):
         print(str(alpha)+"^"+str(i)+"(mod"+str(M)+")="+str(finite[i]))
     return finite
 
-L=showLoop(4,13)
-print(L)
+
+M=11
+
+for i in range(2,M):
+    print(str(i)+":")
+    L=showLoop(i,M)
+    print("len:"+str(len(L)))
+    
+
