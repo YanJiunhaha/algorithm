@@ -2,22 +2,44 @@
 #include <string.h>  
 #include <stdio.h>  
 
-#define debug_prepare 1
+#define debug_prepare 0
 #define debug_mod 0
-#define debug_rader 1
+#define debug_rader 0
+#define debug_NTT 1
 
   
 using namespace std;  
 typedef long long LL;  
-  
+
 const int N = 1 << 18;  
 const int P = (479 << 21) + 1;  
 const int G = 3;  
 const int NUM = 20;  
-  
+
+
+/*
+Ft=2^(2^t)+1
+let M=Ft
+for 0<t<=4
+	G=3,N=Tt-1
+const LL t=2;
+const LL P=(1<<(1<<t))+1;
+const LL G=3;
+const LL N=P-1;
+const int NUM = 20; 
+*/
 LL  wn[NUM];  
 LL  a[N], b[N];  
 char A[N], B[N];  
+  
+inline unsigned int bit_reverse(unsigned int a,int len){
+	a=((a&0x55555555U)<<1)|((a&0xAAAAAAAAU)>>1);
+	a=((a&0x33333333U)<<2)|((a&0xCCCCCCCCU)>>2);
+	a=((a&0x0F0F0F0FU)<<4)|((a&0xF0F0F0F0U)>>4);
+	a=((a&0x00FF00FFU)<<8)|((a&0xFF00FF00U)>>8);
+	a=((a&0x0000FFFFU)<<16)|((a&0xFFFF0000U)>>16);
+	return a>>(32-len);
+}  
   
 LL quick_mod(LL a, LL b, LL m)  
 {  
@@ -94,24 +116,76 @@ void Rader(LL a[], int len)
   
 void NTT(LL a[], int len, int on)  
 {  
-    Rader(a, len);  
+    //Rader(a, len);  
+	int bitlen=std::__lg(len);
+	int in[N];
+#if debug_rader 
+	for(int i=0;i<len;i++)
+		cout<<a[i]<<" ";
+	cout<<endl;
+#endif
+	for(int i=0;i<len;++i)in[i]=a[i];
+	for(int i=0;i<len;++i)a[bit_reverse(i,bitlen)]=in[i];
+#if debug_rader 
+	for(int i=0;i<len;i++)
+		cout<<a[i]<<" ";
+	cout<<endl;
+#endif
     int id = 0;  
+#if debug_NTT
+		cout<<"=============hb============="<<endl;
+#endif 
     for(int h = 2; h <= len; h <<= 1)  
-    {  
-        id++;  
+    { 
+		id++; 
+		int wn_n=quick_mod(G,(P-1)>>id,P);
+#if debug_NTT
+		cout<<"h(h*2): "<<h<<endl;
+		cout<<"id(id+=1): "<<id<<endl;
+		cout<<"wn_n(pow_mod(G,(P-1)/(2^id),P)):"<<wn_n<<endl;
+		cout<<"=============jb============="<<endl;
+#endif
         for(int j = 0; j < len; j += h)  
-        {  
+        {
             LL w = 1;  
+#if debug_NTT
+			cout<<"j(j+=h):"<<j<<endl;
+			cout<<"w:"<<w<<endl;
+			cout<<"a[]:";
+			for(int i=0;i<len;++i){
+				cout<<a[i]<<" ";
+			}cout<<endl;
+		cout<<"=============kb============="<<endl;
+#endif
             for(int k = j; k < j + h / 2; k++)  
-            {  
+            {
                 LL u = a[k] % P;  
                 LL t = w * a[k + h / 2] % P;  
                 a[k] = (u + t) % P;  
                 a[k + h / 2] = (u - t + P) % P;  
-                w = w * wn[id] % P;  
+                //w = w * wn[id] % P;  
+				w=w*wn_n%P;
+#if debug_NTT
+				cout<<"k:"<<k<<endl;
+				cout<<"u(a[k]%P):"<<u<<endl;
+				cout<<"t(w*a[k+h/2]%P):"<<t<<endl;
+				cout<<"a[k]((u+t)%P):"<<a[k]<<endl;
+				cout<<"a[k+h/2]((u-t+P)%P):"<<a[k+h/2]<<endl;
+				cout<<"wn[id]:"<<wn[id]<<endl;
+				cout<<"w(w*wn%P):"<<w<<endl;
+#endif 
             }  
+#if debug_NTT
+		cout<<"=============ke============="<<endl;
+#endif
         }  
-    }  
+#if debug_NTT
+		cout<<"=============je============="<<endl;
+#endif
+    }   
+#if debug_NTT
+		cout<<"=============he============="<<endl;
+#endif 
     if(on == -1)  
     {  
         for(int i = 1; i < len / 2; i++)  
