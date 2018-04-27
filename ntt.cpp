@@ -9,13 +9,18 @@
 
   
 using namespace std;  
-typedef long long LL;  
-
+typedef long long LL; 
+const int N = 1 << 18;  
+const int P = (1<<23)*7*17+1;  
+const int G = 3;  
+const int NUM = 20;
+ 
+/*
 const int N = 1 << 18;  
 const int P = (479 << 21) + 1;  
 const int G = 3;  
 const int NUM = 20;  
-
+*/
 
 /*
 Ft=2^(2^t)+1
