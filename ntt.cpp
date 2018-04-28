@@ -5,7 +5,7 @@
 #define debug_prepare 0
 #define debug_mod 0
 #define debug_rader 0
-#define debug_NTT 1
+#define debug_NTT 0
 
   
 using namespace std;  
