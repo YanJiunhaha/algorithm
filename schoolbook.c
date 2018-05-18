@@ -1,5 +1,6 @@
-#include<math.h>
-#include"schoolbook.h"
+//#include<math.h>
+#include".\include\schoolbook.h"
+/*
 int Log2(int n){
 	double ans=log(n)/log(2);
 	return (ans>(int)ans)?(int)ans+1:(int)ans;
@@ -13,7 +14,16 @@ int schoolbook(int a,int b){
 		b>>=1;
 	}
 	return sum;
+}*/
+int schoolbook(int a,int b){
+	int sum=0,i=0;
+	while(b){
+		if(b&1)sum+=(a<<i);
+		++i;b>>=1;
+	}
+	return sum;
 }
+
 
 #define debug 0
 #if debug
