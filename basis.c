@@ -27,10 +27,10 @@ int* basis(int in,int len,int *elen){
 	#include<stdio.h>
 	int main(){
 		int a=128;
-		int *len=(int*)malloc(sizeof(int));
-		int *num=basis(a,128,len);
-		printf("%d\n",*len);
-		for(int i=0;i<*len;++i){
+		int len;
+		int *num=basis(a,128,&len);
+		printf("%d\n",len);
+		for(int i=0;i<len;++i){
 			printf("%d\t",*(num+i));
 		}
 		free(num);
